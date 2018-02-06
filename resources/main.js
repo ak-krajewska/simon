@@ -1,8 +1,10 @@
- /* jshint browser: true */
+/*jshint browser: true, esversion: 6 */
 
 let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
+let colorSequence = [];
+let playerSequence = [];
 
 //turn the game on and off
 document.getElementById('power-switch').addEventListener('click', toggleConsole);
@@ -63,13 +65,43 @@ function startGame(){
         window.console.log("start a new game!");
         gameGoing = true;
         window.console.log("gameGoing = " + gameGoing);
-        //activate the color pad
-        //maybe call a function that plays the game
-        //use a random number generator to generate the game sequence
-        //play the first tone
-        //update the counter
+        playGame();
+    }  
+}
+
+function playGame(){
+    //use a random number generator to generate the game sequence
+    generateColorSequence();
+    window.console.log(colorSequence);
+    //play the first tone
+    pushColorPad(colorSequence[0], 700);
+    //document.getElementById(colorSequence[0]).classList.add("light");
+    //we'll need to depress it also, and abstract this, some kind of function for a generic button press
+    //update the counter
+    document.getElementById('count').innerHTML = '01';
+    //activate the color pad  
+}
+
+function pushColorPad(padNum, holdTime){
+    document.getElementById(padNum).classList.add("light");
+    //play a corresponding noise
+    //hold it for holdTime amount of time
+    setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
+    //document.getElementById(padNum).classList.remove("light");
+}
+
+ //getRandomIntInclusive from MDN https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+    } 
+
+function generateColorSequence(){
+    //generate X numbers between 1 and 4 and stick them in the array
+    for (let i=0; i < 20; i++){
+        colorSequence.push(getRandomIntInclusive(1, 4));
     }
-    
 }
 
 //series of fucntions for pressing each of the color pads
@@ -77,3 +109,4 @@ function startGame(){
 //makes a noise
 //calls another function that
     //compares button press against game sequence
+//you have a limited amount of time to press the button
