@@ -13,6 +13,11 @@ const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3')
 const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3'); //second highest, yellow button
 const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3'); // third highest, red button
 const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3'); //lowest pitch, green button
+//you can make an error tone by playig all the sounds at once
+
+//ok it turns out you can dynamically name variables but you can do an array
+
+const tones = ['', tone1, tone2, tone3, tone4]; 
 
 //turn the game on and off
 document.getElementById('power-switch').addEventListener('click', toggleConsole);
@@ -35,6 +40,8 @@ function toggleConsole(){
         document.getElementById('mode-led').setAttribute('class', "led");
         //deactivate count window
         document.getElementById('count').setAttribute('class', "count led-off");
+        //stop the current game
+        gameGoing = false;
     } else {
         document.getElementById('power-switch').setAttribute('class', "switch switch-on");
         isConsoleActive = true;
@@ -69,6 +76,7 @@ function toggleStrict(){
 function startGame(){
     if (gameGoing === true){
         //clear out the current game
+        playGame();
     } else {
         window.console.log("start a new game!");
         gameGoing = true;
@@ -93,10 +101,10 @@ function playGame(){
 function pushColorPad(padNum, holdTime){
     document.getElementById(padNum).classList.add("light");
     //play a corresponding noise for holdTime
-    tone1.play();
-    setTimeout(function(){tone2.play();}, 200);
+    tones[padNum].play();
+    /*setTimeout(function(){tone2.play();}, 200);
     setTimeout(function(){tone3.play();}, 400);
-    setTimeout(function(){tone4.play();}, 600);
+    setTimeout(function(){tone4.play();}, 600);*/
     //hold it for holdTime amount of time
     setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
     //document.getElementById(padNum).classList.remove("light");
@@ -110,6 +118,8 @@ function getRandomIntInclusive(min, max) {
     } 
 
 function generateColorSequence(){
+    //clear whatever is in the sequece array
+    colorSequence = [];
     //generate X numbers between 1 and 4 and stick them in the array
     for (let i=0; i < 20; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
