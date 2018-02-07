@@ -1,10 +1,18 @@
 /*jshint browser: true, esversion: 6 */
 
+//note the off button isn't clearing something, so pressing start a second time doesn't do anything
+
 let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
 let playerSequence = [];
+
+//assign audio tones. These never change so using const declaration
+const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3'); //highest ptich, blue button 
+const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3'); //second highest, yellow button
+const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3'); // third highest, red button
+const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3'); //lowest pitch, green button
 
 //turn the game on and off
 document.getElementById('power-switch').addEventListener('click', toggleConsole);
@@ -84,7 +92,11 @@ function playGame(){
 
 function pushColorPad(padNum, holdTime){
     document.getElementById(padNum).classList.add("light");
-    //play a corresponding noise
+    //play a corresponding noise for holdTime
+    tone1.play();
+    setTimeout(function(){tone2.play();}, 200);
+    setTimeout(function(){tone3.play();}, 400);
+    setTimeout(function(){tone4.play();}, 600);
     //hold it for holdTime amount of time
     setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
     //document.getElementById(padNum).classList.remove("light");
