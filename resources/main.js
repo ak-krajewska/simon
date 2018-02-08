@@ -87,10 +87,11 @@ function activateGamePad(){
 }
 
 function pushBlue(){
-    document.getElementById(1).classList.add("light");
-    tones[1].play();
+    if (demoMode === false){
+        document.getElementById(1).classList.add("light");
+        tones[1].play(); //will need a way to prolong the noise
+    } else return;
     
-    //we'll actually want both a click and a release button so depending on how long you hold it plays the sound a different amount
 }
 
 function unPushBlue(){
@@ -98,8 +99,10 @@ function unPushBlue(){
 }
 
 function pushYellow(){
-    document.getElementById(2).classList.add("light");
-    tones[2].play();
+    if (demoMode === false){
+        document.getElementById(2).classList.add("light");
+        tones[2].play();
+    } else return;
 }
 
 function unPushYellow(){
@@ -107,8 +110,10 @@ function unPushYellow(){
 }
 
 function pushRed(){
+    if (demoMode === false){
     document.getElementById(3).classList.add("light");
     tones[3].play();
+    } else return;
 }
 
 function unPushRed(){
@@ -116,8 +121,10 @@ function unPushRed(){
 }
 
 function pushGreen(){
+    if (demoMode === false){
     document.getElementById(4).classList.add("light");
     tones[4].play();
+    } else return;
 }
 
 function unPushGreen(){
@@ -126,6 +133,7 @@ function unPushGreen(){
 
 
 //pressing start a game while a game is going starts a new game
+//though maybe we should instead create a reset button.
 //it is allowed to toggle strict mode while a game is in progress (that's weird)
 function startGame(){
     if (gameGoing === true){
@@ -150,6 +158,7 @@ function playGame(){
     //update the counter
     document.getElementById('count').innerHTML = '01';
     //activate the color pad 
+    demoMode = false;
     //when it's player's turn activate pad
     //when it's computer's turn, de-activeate pad
     
