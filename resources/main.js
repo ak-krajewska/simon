@@ -1,8 +1,8 @@
 /*jshint browser: true, esversion: 6 */
 
 //nice to have: figure out how to sustain the tone, but let's not get worked up about it yet -> not all simon games sustained the note
-//todo: abstract the button press events somehow maybe because 8 almost identical functions is silly
-//todo: have the mouse events call a function that passes the parameter of which pad button it is to a generic push and play function, so we'll only one of the big ones
+
+
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //something is making the sound only play once, the first time it's played and then never again -- something is amiss with the event handler?/event?
 
@@ -92,54 +92,56 @@ function activateGamePad(){
 
 function pushBlue(){
     if (demoMode === false){
-        document.getElementById(1).classList.add("light");
-        tones[1].play(); //will need a way to prolong the noise
-        //add a number to playerSequence array
-        playerSequence.push(1);
-        window.console.log("player sequence is");
-        window.console.log(playerSequence);
-    } else return;
-    
+        playerPushButton(1);
+    } else return;  
 }
 
 function unPushBlue(){
-    document.getElementById(1).classList.remove("light");
+   playerUnPushButton(1);
 }
 
 function pushYellow(){
-    if (demoMode === false){
-        document.getElementById(2).classList.add("light");
-        tones[2].play();
-        playerSequence.push(2);
-    } else return;
+   if (demoMode === false){
+        playerPushButton(2);
+    } else return;  
 }
 
 function unPushYellow(){
-    document.getElementById(2).classList.remove("light");
+   playerUnPushButton(2);
 }
 
 function pushRed(){
-    if (demoMode === false){
-    document.getElementById(3).classList.add("light");
-    tones[3].play();
-    playerSequence.push(3);
-    } else return;
+   if (demoMode === false){
+        playerPushButton(3);
+    } else return;  
 }
 
 function unPushRed(){
-    document.getElementById(3).classList.remove("light");
+    playerUnPushButton(3);
 }
 
 function pushGreen(){
-    if (demoMode === false){
-    document.getElementById(4).classList.add("light");
-    tones[4].play();
-    playerSequence.push(4);
-    } else return;
+   if (demoMode === false){
+        playerPushButton(4);
+    } else return;  
 }
 
 function unPushGreen(){
-    document.getElementById(4).classList.remove("light");
+    playerUnPushButton(4);
+}
+
+function playerPushButton(padNum) {
+    document.getElementById(padNum).classList.add("light");
+    tones[padNum].load(); //need to do this or else the sound will only play the first time
+    tones[padNum].play(); //will need a way to prolong the noise
+    //add a number to playerSequence array
+    playerSequence.push(padNum);
+    window.console.log("player sequence is");
+    window.console.log(playerSequence);         
+}
+
+function playerUnPushButton(padNum){
+    document.getElementById(padNum).classList.remove("light");
 }
 
 
@@ -169,7 +171,7 @@ function playGame(){
     //update the counter
     document.getElementById('count').innerHTML = '01';
     //activate the color pad 
-    demoMode = false;
+    //demoMode = false; //-- is this what's causing it to only play once? nope not this
     //player turn
     //compare score
     
@@ -178,6 +180,7 @@ function playGame(){
 function pushColorPad(padNum, holdTime){
     document.getElementById(padNum).classList.add("light");
     //play a corresponding noise for holdTime
+    tones[padNum].load();
     tones[padNum].play();
     /*setTimeout(function(){tone2.play();}, 200);
     setTimeout(function(){tone3.play();}, 400);
@@ -197,7 +200,7 @@ function generateColorSequence(){
     //clear whatever is in the sequece array
     colorSequence = [];
     //clear the player's inputs as well
-    playerSequence = [];
+    playerSequence = []; //is this what's causing it to only play once? -- nope not this
     //generate X numbers between 1 and 4 and stick them in the array
     for (let i=0; i < 20; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
