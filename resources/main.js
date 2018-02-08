@@ -1,12 +1,14 @@
 /*jshint browser: true, esversion: 6 */
 
-//note the off button isn't clearing something, so pressing start a second time doesn't do anything
+//todo: figure out how to sustain the tone, but let's not get worked up about it yet
 
 let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
 let playerSequence = [];
+let demoMode = true; //used to disable playpad while the computer is demoing sequence
+
 
 //assign audio tones. These never change so using const declaration
 const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3'); //highest ptich, blue button 
@@ -18,6 +20,8 @@ const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3')
 //ok it turns out you can dynamically name variables but you can do an array
 
 const tones = ['', tone1, tone2, tone3, tone4]; 
+
+activateGamePad();
 
 //turn the game on and off
 document.getElementById('power-switch').addEventListener('click', toggleConsole);
@@ -71,6 +75,56 @@ function toggleStrict(){
     } 
 }
 
+function activateGamePad(){
+    document.getElementById('1').addEventListener('mousedown', pushBlue);
+    document.getElementById('1').addEventListener('mouseup', unPushBlue);
+    document.getElementById('2').addEventListener('mousedown', pushYellow);
+    document.getElementById('2').addEventListener('mouseup', unPushYellow);
+    document.getElementById('3').addEventListener('mousedown', pushRed);
+    document.getElementById('3').addEventListener('mouseup', unPushRed);
+    document.getElementById('4').addEventListener('mousedown', pushGreen);
+    document.getElementById('4').addEventListener('mouseup', unPushGreen);
+}
+
+function pushBlue(){
+    document.getElementById(1).classList.add("light");
+    tones[1].play();
+    
+    //we'll actually want both a click and a release button so depending on how long you hold it plays the sound a different amount
+}
+
+function unPushBlue(){
+    document.getElementById(1).classList.remove("light");
+}
+
+function pushYellow(){
+    document.getElementById(2).classList.add("light");
+    tones[2].play();
+}
+
+function unPushYellow(){
+    document.getElementById(2).classList.remove("light");
+}
+
+function pushRed(){
+    document.getElementById(3).classList.add("light");
+    tones[3].play();
+}
+
+function unPushRed(){
+    document.getElementById(3).classList.remove("light");
+}
+
+function pushGreen(){
+    document.getElementById(4).classList.add("light");
+    tones[4].play();
+}
+
+function unPushGreen(){
+    document.getElementById(4).classList.remove("light");
+}
+
+
 //pressing start a game while a game is going starts a new game
 //it is allowed to toggle strict mode while a game is in progress (that's weird)
 function startGame(){
@@ -95,7 +149,10 @@ function playGame(){
     //we'll need to depress it also, and abstract this, some kind of function for a generic button press
     //update the counter
     document.getElementById('count').innerHTML = '01';
-    //activate the color pad  
+    //activate the color pad 
+    //when it's player's turn activate pad
+    //when it's computer's turn, de-activeate pad
+    
 }
 
 function pushColorPad(padNum, holdTime){
@@ -107,7 +164,6 @@ function pushColorPad(padNum, holdTime){
     setTimeout(function(){tone4.play();}, 600);*/
     //hold it for holdTime amount of time
     setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
-    //document.getElementById(padNum).classList.remove("light");
 }
 
  //getRandomIntInclusive from MDN https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
@@ -132,3 +188,4 @@ function generateColorSequence(){
 //calls another function that
     //compares button press against game sequence
 //you have a limited amount of time to press the button
+//color pad is NOT active while the game plays, but it seems crazy to add and remove even listiners
