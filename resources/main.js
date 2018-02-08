@@ -1,21 +1,25 @@
 /*jshint browser: true, esversion: 6 */
 
-//todo: figure out how to sustain the tone, but let's not get worked up about it yet
+//nice to have: figure out how to sustain the tone, but let's not get worked up about it yet -> not all simon games sustained the note
+//todo: abstract the button press events somehow maybe because 8 almost identical functions is silly
+//todo: have the mouse events call a function that passes the parameter of which pad button it is to a generic push and play function, so we'll only one of the big ones
+//victory tone is playing the entire sequence, then flashing the circle, or something like that.
+//something is making the sound only play once, the first time it's played and then never again -- something is amiss with the event handler?/event?
 
 let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
 let playerSequence = [];
-let demoMode = true; //used to disable playpad while the computer is demoing sequence
+let demoMode = false; //used to disable playpad while the computer is demoing sequence
 
 
 //assign audio tones. These never change so using const declaration
-const tone1 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound1.mp3'); //highest ptich, blue button 
-const tone2 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound2.mp3'); //second highest, yellow button
-const tone3 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound3.mp3'); // third highest, red button
-const tone4 = new Audio('https://s3.amazonaws.com/freecodecamp/simonSound4.mp3'); //lowest pitch, green button
-//you can make an error tone by playig all the sounds at once
+const tone1 = new Audio('resources/audio/simonSound1.mp3'); //highest ptich, blue button 
+const tone2 = new Audio('resources/audio/simonSound2.mp3'); //second highest, yellow button
+const tone3 = new Audio('resources/audio/simonSound3.mp3'); // third highest, red button
+const tone4 = new Audio('resources/audio/simonSound4.mp3'); //lowest pitch, green button
+//you can make an error tone by playing all the sounds at once
 
 //ok it turns out you can dynamically name variables but you can do an array
 
@@ -90,6 +94,10 @@ function pushBlue(){
     if (demoMode === false){
         document.getElementById(1).classList.add("light");
         tones[1].play(); //will need a way to prolong the noise
+        //add a number to playerSequence array
+        playerSequence.push(1);
+        window.console.log("player sequence is");
+        window.console.log(playerSequence);
     } else return;
     
 }
@@ -102,6 +110,7 @@ function pushYellow(){
     if (demoMode === false){
         document.getElementById(2).classList.add("light");
         tones[2].play();
+        playerSequence.push(2);
     } else return;
 }
 
@@ -113,6 +122,7 @@ function pushRed(){
     if (demoMode === false){
     document.getElementById(3).classList.add("light");
     tones[3].play();
+    playerSequence.push(3);
     } else return;
 }
 
@@ -124,6 +134,7 @@ function pushGreen(){
     if (demoMode === false){
     document.getElementById(4).classList.add("light");
     tones[4].play();
+    playerSequence.push(4);
     } else return;
 }
 
@@ -159,8 +170,8 @@ function playGame(){
     document.getElementById('count').innerHTML = '01';
     //activate the color pad 
     demoMode = false;
-    //when it's player's turn activate pad
-    //when it's computer's turn, de-activeate pad
+    //player turn
+    //compare score
     
 }
 
@@ -185,16 +196,15 @@ function getRandomIntInclusive(min, max) {
 function generateColorSequence(){
     //clear whatever is in the sequece array
     colorSequence = [];
+    //clear the player's inputs as well
+    playerSequence = [];
     //generate X numbers between 1 and 4 and stick them in the array
     for (let i=0; i < 20; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
     }
 }
 
-//series of fucntions for pressing each of the color pads
-//changes the color
-//makes a noise
-//calls another function that
-    //compares button press against game sequence
+
+
+//compares button press against game sequence
 //you have a limited amount of time to press the button
-//color pad is NOT active while the game plays, but it seems crazy to add and remove even listiners
