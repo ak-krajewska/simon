@@ -29,6 +29,8 @@ const tone4 = new Audio('resources/audio/simonSound4.mp3'); //lowest pitch, gree
 
 const tones = ['', tone1, tone2, tone3, tone4]; 
 
+victorySong();
+
 activateGamePad();
 
 //turn the game on and off
@@ -176,12 +178,7 @@ function playGame(){
     document.getElementById('count').innerHTML = '01';
     //activate the color pad 
     demoMode = false; 
-    //player turn
-    //compare score
-    //setTimeout(scoreCompare(0), 3000); //-- why does this not work but an anonymous function works? -- it's because this schedules the return, not the function, the correct way is below:
     
-    //ok actually we only want to use the timeout and say it's an error IF the player doesn't do anything for a while, so if no inputs.
-    //to make it harder, I want to give the player X time per play, not some X time total
     //setTimeout(function() { scoreCompare(0); },5000);
    //setTimeout('scoreCompare(0)', 3000);
     
@@ -233,6 +230,13 @@ function scoreCompare(num){
 function playDemo(num){
     //takes as parameter the current bigTurn number and plays the demo form the colorSequence up to bitTurn's number
     window.console.log("i'm playing the demo");
+    for (let i = 0; i < num; i++){
+        //call button press immediately
+        playerPushButton(colorSequence[num]);
+        //call button release after a timeout
+        playerUnPushButton(colorSequence[num]);
+        //after a time out call another function, that calls the button press
+    }
 }
 
 function flashMessage(message, times){
@@ -254,9 +258,6 @@ function pushColorPad(padNum, holdTime){
     //play a corresponding noise for holdTime
     tones[padNum].load();
     tones[padNum].play();
-    /*setTimeout(function(){tone2.play();}, 200);
-    setTimeout(function(){tone3.play();}, 400);
-    setTimeout(function(){tone4.play();}, 600);*/
     //hold it for holdTime amount of time
     setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
 }
@@ -281,10 +282,10 @@ function generateColorSequence(){
 
 //this ends up playing all the sounds at the same time so we'll need to rethink it
 function victorySong() {
-    pushColorPad(1, 200);
-    pushColorPad(2, 300);
-    pushColorPad(3, 400);
-    pushColorPad(4, 500);
+    setTimeout(function(){tone1.play();}, 100);
+    setTimeout(function(){tone2.play();}, 500);
+    setTimeout(function(){tone3.play();}, 900);
+    setTimeout(function(){tone4.play();}, 1300);
 }
 
 
