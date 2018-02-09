@@ -4,9 +4,8 @@
 
 
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
-//something is making the sound only play once, the first time it's played and then never again -- something is amiss with the event handler?/event?
-//turncount needs to be a global variable
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
+//todo: give an error if they player doesn't press a button after a certain amount of time
 
 
 let isConsoleActive = false;
@@ -67,6 +66,7 @@ function toggleConsole(){
         document.getElementById('mode').addEventListener('click', toggleStrict);
         //activate count window with --
         document.getElementById('count').setAttribute('class', "count");
+        document.getElementById('count').innerHTML = "--";
     }   
 }
 
@@ -156,15 +156,13 @@ function playerUnPushButton(padNum){
 //though maybe we should instead create a reset button.
 //it is allowed to toggle strict mode while a game is in progress (that's weird)
 function startGame(){
-    if (gameGoing === true){
-        //clear out the current game
-        playGame();
-    } else {
-        window.console.log("start a new game!");
-        gameGoing = true;
-        window.console.log("gameGoing = " + gameGoing);
-        playGame();
-    }  
+    //reset turn counters
+    bigTurn = 0;
+    littleTurn = 0;
+    //set the toggle that the game is going
+    gameGoing = true;
+    //play the game
+    playGame();
 }
 
 function playGame(){
