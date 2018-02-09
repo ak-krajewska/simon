@@ -12,7 +12,6 @@ let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
-let playerSequence = []; //actually we don't need to store this, we'll compare on a step by step basis
 let demoMode = true; //used to disable playpad while the computer is demoing sequence
 let bigTurn = 0; //this is what step in the game as a whole we are in, also corresponds to the number of plays the player has to make to get this turn correct (bigTurn+1) eg we are on the 2n'd turn, bigTurm is 1, player has to make 2 correct plays
 let littleTurn = 0; //this is the current button press within the current bigTurn
@@ -29,7 +28,6 @@ const tone4 = new Audio('resources/audio/simonSound4.mp3'); //lowest pitch, gree
 
 const tones = ['', tone1, tone2, tone3, tone4]; 
 
-victorySong();
 
 activateGamePad();
 
@@ -141,12 +139,15 @@ function playerPushButton(padNum) {
     document.getElementById(padNum).classList.add("light");
     tones[padNum].load(); //need to do this or else the sound will only play the first time
     tones[padNum].play(); //will need a way to prolong the noise
-    //add a number to playerSequence array
-    playerSequence.push(padNum); //we weill remove all this later because we won't be using the playerSequence
-    window.console.log("player sequence is");
-    window.console.log(playerSequence);
     scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
     
+}
+
+function computerPushButton(padNum) {
+    document.getElementById(padNum).classList.add("light");
+    tones[padNum].load(); //need to do this or else the sound will only play the first time
+    tones[padNum].play(); //will need a way to prolong the noise
+    //add a number to playerSequence array
 }
 
 function playerUnPushButton(padNum){
@@ -172,34 +173,22 @@ function playGame(){
     generateColorSequence();
     window.console.log(colorSequence);
     //play the first tone
-    pushColorPad(colorSequence[0], 700);
+    document.getElementById('count').innerHTML = '01';
+    //playDemo(bigTurn);
+    //pushColorPad(colorSequence[0], 700);
+    computerPushButton(colorSequence[bigTurn]);
+    setTimeout(playerUnPushButton(colorSequence[bigTurn]), 500);
     
     //update the counter
-    document.getElementById('count').innerHTML = '01';
+    
     //activate the color pad 
     demoMode = false; 
     
     //setTimeout(function() { scoreCompare(0); },5000);
    //setTimeout('scoreCompare(0)', 3000);
     
+    //setTimeout(function() { scoreCompare(i); },3000);
     
-    /*
-    //after the sequence is generated
-    for (let i = 0; i < 5; i++){ //for now we are only using the first 5 rather than all 20, for testing convenience
-        //play the first tone in the sequence
-        pushColorPad(colorSequence[i], 700); //this needs to have a timeout before it goes too, but also not go to the next step until the player goes
-    //turn control over to the player
-        demoMode = false;
-        //wait for the player response
-        //how do you make the computer wait for a response?
-    //after player plays a tone, compare it to the computers tone
-        setTimeout(function() { scoreCompare(i); },3000);
-    //return control to computer
-    //play the two tones in the sequence
-    } 
-    */
-    
-    //it's possible that callbacks might be better than for loops except that I need that counter? I guess the function can increment the counter as part of the callback if I really need that i
 }
 
 function scoreCompare(num){
@@ -230,13 +219,13 @@ function scoreCompare(num){
 function playDemo(num){
     //takes as parameter the current bigTurn number and plays the demo form the colorSequence up to bitTurn's number
     window.console.log("i'm playing the demo");
-    for (let i = 0; i < num; i++){
+    /* for (let i = 0; i < num; i++){ //note to self making i <= creates an infinite loop
         //call button press immediately
         playerPushButton(colorSequence[num]);
         //call button release after a timeout
-        playerUnPushButton(colorSequence[num]);
+        setTimeout(playerUnPushButton(colorSequence[num]), 500);
         //after a time out call another function, that calls the button press
-    }
+    } */
 }
 
 function flashMessage(message, times){
@@ -272,8 +261,6 @@ function getRandomIntInclusive(min, max) {
 function generateColorSequence(){
     //clear whatever is in the sequece array
     colorSequence = [];
-    //clear the player's inputs as well
-    playerSequence = [];
     //generate X numbers between 1 and 4 and stick them in the array
     for (let i=0; i < 20; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
