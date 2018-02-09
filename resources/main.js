@@ -13,8 +13,10 @@ let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
-let playerSequence = [];
+let playerSequence = []; //actually we don't need to store this, we'll compare on a step by step basis
 let demoMode = true; //used to disable playpad while the computer is demoing sequence
+let bigTurn = 0; //this is what step in the game as a whole we are in, also corresponds to the number of plays the player has to make to get this turn correct (bigTurn+1) eg we are on the 2n'd turn, bigTurm is 1, player has to make 2 correct plays
+let littleTurn = 0; //this is the current button press within the current bigTurn
 
 
 //assign audio tones. These never change so using const declaration
@@ -138,9 +140,10 @@ function playerPushButton(padNum) {
     tones[padNum].load(); //need to do this or else the sound will only play the first time
     tones[padNum].play(); //will need a way to prolong the noise
     //add a number to playerSequence array
-    playerSequence.push(padNum);
+    playerSequence.push(padNum); //we weill remove all this later because we won't be using the playerSequence
     window.console.log("player sequence is");
     window.console.log(playerSequence);
+    scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
     
 }
 
@@ -179,7 +182,9 @@ function playGame(){
     //compare score
     //setTimeout(scoreCompare(0), 3000); //-- why does this not work but an anonymous function works? -- it's because this schedules the return, not the function, the correct way is below:
     
-    setTimeout(function() { scoreCompare(0); },5000);
+    //ok actually we only want to use the timeout and say it's an error IF the player doesn't do anything for a while, so if no inputs.
+    //to make it harder, I want to give the player X time per play, not some X time total
+    //setTimeout(function() { scoreCompare(0); },5000);
    //setTimeout('scoreCompare(0)', 3000);
     
     
@@ -203,11 +208,47 @@ function playGame(){
 }
 
 function scoreCompare(num){
-    if (playerSequence[num] === colorSequence[num]){
-            window.console.log("you played the right tone");
-        } else if (playerSequence[num] != colorSequence[num]){
-            window.console.log("you played the wrong tone");
+    if (num === colorSequence[littleTurn]){
+        window.console.log("you played the right tone");
+        if (littleTurn === bigTurn){
+            demoMode = true;
+            bigTurn++;
+            window.console.log("bigTurn is updated to " + bigTurn);
+            playDemo(bigTurn);
+        } else if (littleTurn < bigTurn){
+            littleTurn++;
+            window.console.log("littleTurn is updated to " + littleTurn);
         }
+        
+        } else if (num != colorSequence[littleTurn]){
+            window.console.log("you played the wrong tone");
+            //if not in strictmode
+            //flash error in the counter
+            flashMessage('!!!', 3);
+            //set counter back to bigTurn
+            updateCounter(bigTurn+1);
+            //demo the sequence again
+            playDemo(bigTurn);
+        }
+}
+
+function playDemo(num){
+    //takes as parameter the current bigTurn number and plays the demo form the colorSequence up to bitTurn's number
+    window.console.log("i'm playing the demo");
+}
+
+function flashMessage(message, times){
+    //display message 'message' in the 'count' innerHTM 'times' times
+    //TODO: do some stuff with intervals to actually make this work as a flash
+    //use class led-off to get the flashing effect visually
+    document.getElementById('count').innerHTML = message;
+    window.console.log("I'm dispalying the message " + message + " " + times + " times");
+}
+
+function updateCounter(num){
+    if (num < 10){
+        document.getElementById('count').innerHTML = "0" + num;
+    } else document.getElementById('count').innerHTML = "0" + num;
 }
 
 function pushColorPad(padNum, holdTime){
