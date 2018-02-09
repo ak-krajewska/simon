@@ -5,13 +5,16 @@
 
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //something is making the sound only play once, the first time it's played and then never again -- something is amiss with the event handler?/event?
+//turncount needs to be a global variable
+//todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
+
 
 let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
 let playerSequence = [];
-let demoMode = false; //used to disable playpad while the computer is demoing sequence
+let demoMode = true; //used to disable playpad while the computer is demoing sequence
 
 
 //assign audio tones. These never change so using const declaration
@@ -137,7 +140,8 @@ function playerPushButton(padNum) {
     //add a number to playerSequence array
     playerSequence.push(padNum);
     window.console.log("player sequence is");
-    window.console.log(playerSequence);         
+    window.console.log(playerSequence);
+    
 }
 
 function playerUnPushButton(padNum){
@@ -166,15 +170,44 @@ function playGame(){
     window.console.log(colorSequence);
     //play the first tone
     pushColorPad(colorSequence[0], 700);
-    //document.getElementById(colorSequence[0]).classList.add("light");
-    //we'll need to depress it also, and abstract this, some kind of function for a generic button press
+    
     //update the counter
     document.getElementById('count').innerHTML = '01';
     //activate the color pad 
-    //demoMode = false; //-- is this what's causing it to only play once? nope not this
+    demoMode = false; 
     //player turn
     //compare score
+    //setTimeout(scoreCompare(0), 3000); //-- why does this not work but an anonymous function works? -- it's because this schedules the return, not the function, the correct way is below:
     
+    setTimeout(function() { scoreCompare(0); },5000);
+   //setTimeout('scoreCompare(0)', 3000);
+    
+    
+    /*
+    //after the sequence is generated
+    for (let i = 0; i < 5; i++){ //for now we are only using the first 5 rather than all 20, for testing convenience
+        //play the first tone in the sequence
+        pushColorPad(colorSequence[i], 700); //this needs to have a timeout before it goes too, but also not go to the next step until the player goes
+    //turn control over to the player
+        demoMode = false;
+        //wait for the player response
+        //how do you make the computer wait for a response?
+    //after player plays a tone, compare it to the computers tone
+        setTimeout(function() { scoreCompare(i); },3000);
+    //return control to computer
+    //play the two tones in the sequence
+    } 
+    */
+    
+    //it's possible that callbacks might be better than for loops except that I need that counter? I guess the function can increment the counter as part of the callback if I really need that i
+}
+
+function scoreCompare(num){
+    if (playerSequence[num] === colorSequence[num]){
+            window.console.log("you played the right tone");
+        } else if (playerSequence[num] != colorSequence[num]){
+            window.console.log("you played the wrong tone");
+        }
 }
 
 function pushColorPad(padNum, holdTime){
@@ -200,11 +233,19 @@ function generateColorSequence(){
     //clear whatever is in the sequece array
     colorSequence = [];
     //clear the player's inputs as well
-    playerSequence = []; //is this what's causing it to only play once? -- nope not this
+    playerSequence = [];
     //generate X numbers between 1 and 4 and stick them in the array
     for (let i=0; i < 20; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
     }
+}
+
+//this ends up playing all the sounds at the same time so we'll need to rethink it
+function victorySong() {
+    pushColorPad(1, 200);
+    pushColorPad(2, 300);
+    pushColorPad(3, 400);
+    pushColorPad(4, 500);
 }
 
 
