@@ -198,9 +198,9 @@ function scoreCompare(num){
             window.console.log("you played the wrong tone");
             //if not in strictmode
             //flash error in the counter
-            flashMessage('!!!', 3);
-            //set counter back to bigTurn
-            updateCounter(bigTurn+1);
+            flashMessage('!!', 3);
+            //set counter back to bigTurn, but only after we see the message
+            setTimeout(function() {updateCounter(bigTurn+1);}, 1500);
             //demo the sequence again
             playDemo(bigTurn);
         }
