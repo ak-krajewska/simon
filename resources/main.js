@@ -6,6 +6,7 @@
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
 //todo: give an error if they player doesn't press a button after a certain amount of time
+//to do this assign the timeout to a variable, and the button press clears the timeout, but if no button press then it just runs
 
 
 let isConsoleActive = false;
@@ -15,6 +16,7 @@ let colorSequence = [];
 let demoMode = true; //used to disable playpad while the computer is demoing sequence
 let bigTurn = 0; //this is what step in the game as a whole we are in, also corresponds to the number of plays the player has to make to get this turn correct (bigTurn+1) eg we are on the 2n'd turn, bigTurm is 1, player has to make 2 correct plays
 let littleTurn = 0; //this is the current button press within the current bigTurn
+let responseTime; //global for the timout variable
 
 
 //assign audio tones. These never change so using const declaration
@@ -139,6 +141,7 @@ function playerPushButton(padNum) {
     document.getElementById(padNum).classList.add("light");
     tones[padNum].load(); //need to do this or else the sound will only play the first time
     tones[padNum].play(); //will need a way to prolong the noise
+    clearTimeout(responseTime);
     scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
     
 }
@@ -148,6 +151,15 @@ function computerPushButton(padNum) {
     tones[padNum].load(); //need to do this or else the sound will only play the first time
     tones[padNum].play(); //will need a way to prolong the noise
     //add a number to playerSequence array
+}
+
+function pushColorPad(padNum, holdTime){
+    document.getElementById(padNum).classList.add("light");
+    //play a corresponding noise for holdTime
+    tones[padNum].load();
+    tones[padNum].play();
+    //hold it for holdTime amount of time
+    setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
 }
 
 function playerUnPushButton(padNum){
@@ -175,14 +187,15 @@ function playGame(){
     //play the first tone
     document.getElementById('count').innerHTML = '01';
     //playDemo(bigTurn);
-    //pushColorPad(colorSequence[0], 700);
-    computerPushButton(colorSequence[bigTurn]);
-    setTimeout(playerUnPushButton(colorSequence[bigTurn]), 500);
-    
-    //update the counter
-    
+    computerPushButton(colorSequence[littleTurn]);
+    //computerPushButton(colorSequence[0]);
+    setTimeout(function() {playerUnPushButton(colorSequence[littleTurn]); }, 500);
+    responseTime = setTimeout(function(){
+        scoreCompare(colorSequence[littleTurn]); 
+    }, 3000);
     //activate the color pad 
     demoMode = false; 
+    
     
     //setTimeout(function() { scoreCompare(0); },5000);
    //setTimeout('scoreCompare(0)', 3000);
@@ -240,15 +253,6 @@ function updateCounter(num){
     if (num < 10){
         document.getElementById('count').innerHTML = "0" + num;
     } else document.getElementById('count').innerHTML = "0" + num;
-}
-
-function pushColorPad(padNum, holdTime){
-    document.getElementById(padNum).classList.add("light");
-    //play a corresponding noise for holdTime
-    tones[padNum].load();
-    tones[padNum].play();
-    //hold it for holdTime amount of time
-    setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
 }
 
  //getRandomIntInclusive from MDN https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
