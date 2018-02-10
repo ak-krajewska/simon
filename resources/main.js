@@ -132,11 +132,14 @@ function unPushGreen(){
 }
 
 function playerPushButton(padNum) {
-    document.getElementById(padNum).classList.add("light");
-    tones[padNum].load(); //so the sound plays more than once
-    tones[padNum].play(); //will need a way to prolong the noise
-    clearTimeout(responseTime);
-    scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
+    if (demoMode === false){
+        document.getElementById(padNum).classList.add("light");
+        tones[padNum].load(); //so the sound plays more than once
+        tones[padNum].play(); //will need a way to prolong the noise
+        clearTimeout(responseTime);
+        scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
+    } else return;
+    
 }
 
 function computerPushButton(padNum) {
@@ -155,9 +158,8 @@ function playerUnPushButton(padNum){
 //though maybe we should instead create a reset button.
 //it is allowed to toggle strict mode while a game is in progress (that's weird)
 function startGame(){
-    //reset turn counters
+    //reset bigturn counter
     bigTurn = 0;
-    littleTurn = 0;
     //set the toggle that the game is going
     gameGoing = true;
     //play the game
@@ -169,29 +171,33 @@ function playGame(){
     generateColorSequence();
     window.console.log(colorSequence);
     //play the first tone
-    document.getElementById('count').innerHTML = '01';
-    //playDemo(bigTurn);
-    computerPushButton(colorSequence[littleTurn]);
-    //computerPushButton(colorSequence[0]);
-    setTimeout(function() {playerUnPushButton(colorSequence[littleTurn]); }, 500);
+    //document.getElementById('count').innerHTML = '01';
+    //computerPushButton(colorSequence[littleTurn]);
+    //setTimeout(function() {playerUnPushButton(colorSequence[littleTurn]); }, 500);
+    littleTurn = 0;
+    playDemo(); //or should it be bigTurn+1? -- not it's littleTurn, if anything
+    //I suspect this timeout score compare is causing stupidness
+    /*
     responseTime = setTimeout(function(){
         scoreCompare(colorSequence[littleTurn]); 
     }, 3000);
+    */
     //activate the color pad 
     demoMode = false; 
 }
 
 function scoreCompare(num){
+    //something is looping compareScore, calling it over and over
     if (num === colorSequence[littleTurn]){
         window.console.log("you played the right tone");
         if (littleTurn === bigTurn){
             demoMode = true;
             bigTurn++;
-            window.console.log("bigTurn is updated to " + bigTurn);
-            playDemo(bigTurn);
+            window.console.log("bigTurn is updated by scoreCompare to " + bigTurn);
+            playDemo(); //it's playing and updating every time any key is right but actaully we only want to update bigTurn AND play the demo at the last item. I think. Is that what's happening?
         } else if (littleTurn < bigTurn){
             littleTurn++;
-            window.console.log("littleTurn is updated to " + littleTurn);
+            window.console.log("littleTurn is updated by scoreCompare to " + littleTurn);
         }
         
         } else if (num != colorSequence[littleTurn]){
@@ -201,21 +207,31 @@ function scoreCompare(num){
             flashMessage('!!', 3);
             //set counter back to bigTurn, but only after we see the message
             setTimeout(function() {updateCounter(bigTurn+1);}, 1500);
+            //reset littleTurn to 0 becasue we have to play the sequence from the start
+            littleTurn = 0;
             //demo the sequence again
-            playDemo(bigTurn);
+            playDemo(); 
+            //somehow if you get it wrong it just plays the demo infinite times
         }
 }
 
-function playDemo(num){
-    //takes as parameter the current bigTurn number and plays the demo form the colorSequence up to bitTurn's number
-    window.console.log("i'm playing the demo");
-    /* for (let i = 0; i < num; i++){ //note to self making i <= creates an infinite loop
-        //call button press immediately
-        playerPushButton(colorSequence[num]);
-        //call button release after a timeout
-        setTimeout(playerUnPushButton(colorSequence[num]), 500);
-        //after a time out call another function, that calls the button press
-    } */
+function playDemo(){
+    //no parameter, it uses the global littleTurn
+    window.console.log("playDemo is going");
+    window.console.log("at the stat of playDemo bigTurn is " + bigTurn);
+        
+        if (littleTurn <= bigTurn){
+            //call button press 
+            setTimeout(function(){computerPushButton(colorSequence[littleTurn]);}, 500);
+            //call button release after a timeout
+            setTimeout(function(){playerUnPushButton(colorSequence[littleTurn]); }, 1000);
+            //after a time out call another function, that calls the button press
+            littleTurn++;
+            window.console.log("playDemo incremented little turn to " + littleTurn);
+            setTimeout(playDemo(), 500);
+        } else demoMode = false;
+            
+    
 }
 
 function flashMessage(message, times){
