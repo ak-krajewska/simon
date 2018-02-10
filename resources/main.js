@@ -5,9 +5,6 @@
 
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
-//todo: give an error if they player doesn't press a button after a certain amount of time
-//to do this assign the timeout to a variable, and the button press clears the timeout, but if no button press then it just runs
-
 
 let isConsoleActive = false;
 let strictMode = false;
@@ -26,10 +23,7 @@ const tone3 = new Audio('resources/audio/simonSound3.mp3'); // third highest, re
 const tone4 = new Audio('resources/audio/simonSound4.mp3'); //lowest pitch, green button
 //you can make an error tone by playing all the sounds at once
 
-//ok it turns out you can dynamically name variables but you can do an array
-
 const tones = ['', tone1, tone2, tone3, tone4]; 
-
 
 activateGamePad();
 
@@ -139,11 +133,10 @@ function unPushGreen(){
 
 function playerPushButton(padNum) {
     document.getElementById(padNum).classList.add("light");
-    tones[padNum].load(); //need to do this or else the sound will only play the first time
+    tones[padNum].load(); //so the sound plays more than once
     tones[padNum].play(); //will need a way to prolong the noise
     clearTimeout(responseTime);
     scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
-    
 }
 
 function computerPushButton(padNum) {
@@ -151,15 +144,6 @@ function computerPushButton(padNum) {
     tones[padNum].load(); //need to do this or else the sound will only play the first time
     tones[padNum].play(); //will need a way to prolong the noise
     //add a number to playerSequence array
-}
-
-function pushColorPad(padNum, holdTime){
-    document.getElementById(padNum).classList.add("light");
-    //play a corresponding noise for holdTime
-    tones[padNum].load();
-    tones[padNum].play();
-    //hold it for holdTime amount of time
-    setTimeout(function(){ document.getElementById(padNum).classList.remove("light"); }, holdTime);
 }
 
 function playerUnPushButton(padNum){
@@ -195,13 +179,6 @@ function playGame(){
     }, 3000);
     //activate the color pad 
     demoMode = false; 
-    
-    
-    //setTimeout(function() { scoreCompare(0); },5000);
-   //setTimeout('scoreCompare(0)', 3000);
-    
-    //setTimeout(function() { scoreCompare(i); },3000);
-    
 }
 
 function scoreCompare(num){
@@ -259,7 +236,7 @@ function updateCounter(num){
 function getRandomIntInclusive(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+      return Math.floor(Math.random() * (max - min + 1)) + min; //The max & min both inclusive
     } 
 
 function generateColorSequence(){
@@ -278,8 +255,3 @@ function victorySong() {
     setTimeout(function(){tone3.play();}, 900);
     setTimeout(function(){tone4.play();}, 1300);
 }
-
-
-
-//compares button press against game sequence
-//you have a limited amount of time to press the button
