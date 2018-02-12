@@ -223,6 +223,7 @@ function playDemo(){
     window.console.log("playDemo is going");
     window.console.log("at the stat of playDemo bigTurn is " + bigTurn);
     window.console.log("at the start of playDemo littleTurn is " + littleTurn);
+    if (gameGoing === true){
         
         if (littleTurn <= bigTurn){
             //call button press 
@@ -237,7 +238,7 @@ function playDemo(){
                 playDemo(); 
                 window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time?
         } else demoMode = false;
-            
+    } else return;
     
 }
 
