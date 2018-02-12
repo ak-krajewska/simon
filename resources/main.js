@@ -194,6 +194,8 @@ function scoreCompare(num){
             demoMode = true;
             bigTurn++;
             window.console.log("bigTurn is updated by scoreCompare to " + bigTurn);
+            littleTurn = 0; 
+            window.console.log("scoreCompare is calling playDemo()");
             playDemo(); //it's playing and updating every time any key is right but actaully we only want to update bigTurn AND play the demo at the last item. I think. Is that what's happening?
         } else if (littleTurn < bigTurn){
             littleTurn++;
@@ -210,6 +212,7 @@ function scoreCompare(num){
             //reset littleTurn to 0 becasue we have to play the sequence from the start
             littleTurn = 0;
             //demo the sequence again
+            window.console.log("you got it wrong so scoreCompare is calling playDemo");
             playDemo(); 
             //somehow if you get it wrong it just plays the demo infinite times
         }
@@ -219,6 +222,7 @@ function playDemo(){
     //no parameter, it uses the global littleTurn
     window.console.log("playDemo is going");
     window.console.log("at the stat of playDemo bigTurn is " + bigTurn);
+    window.console.log("at the start of playDemo littleTurn is " + littleTurn);
         
         if (littleTurn <= bigTurn){
             //call button press 
@@ -228,7 +232,10 @@ function playDemo(){
             //after a time out call another function, that calls the button press
             littleTurn++;
             window.console.log("playDemo incremented little turn to " + littleTurn);
-            setTimeout(playDemo(), 500);
+            setTimeout(function(){
+                littleTurn = 0;
+                playDemo(); 
+                window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time?
         } else demoMode = false;
             
     
@@ -256,9 +263,7 @@ function getRandomIntInclusive(min, max) {
     } 
 
 function generateColorSequence(){
-    //clear whatever is in the sequece array
     colorSequence = [];
-    //generate X numbers between 1 and 4 and stick them in the array
     for (let i=0; i < 20; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
     }
