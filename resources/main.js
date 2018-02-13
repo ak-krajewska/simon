@@ -142,23 +142,33 @@ function playerPushButton(padNum) {
     
 }
 
-function computerPushButton(padNum) {
-    document.getElementById(padNum).classList.add("light");
-    tones[padNum].load(); //need to do this or else the sound will only play the first time
-    tones[padNum].play(); //will need a way to prolong the noise
-    //add a number to playerSequence array
-}
-
 function playerUnPushButton(padNum){
     if (demoMode === false){
         document.getElementById(padNum).classList.remove("light");
         scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
     }
 }
-    
+
+function computerPushButton(padNum) {
+    document.getElementById(padNum).classList.add("light");
+    tones[padNum].load(); //need to do this or else the sound will only play the first time
+    tones[padNum].play(); //will need a way to prolong the noise
+    //add a number to playerSequence array
+    setTimeout(function(){
+                computerUnPushButton(colorSequence[demoTurn]); 
+                /////move the demoturn increment to computer unpushbutton maybe, or even another function to prevent confusion
+                demoTurn++;
+                window.console.log("computerUnPushButton incremented demoTurn to " + demoTurn);
+            }, 1000);
+}
+
+
 
 function computerUnPushButton(padNum){
     document.getElementById(padNum).classList.remove("light");
+    setTimeout(function(){
+                playDemo(); 
+            }, 500);//so it plays the next tone --> unfortunately this causes an infinite loop ugh -- it needs a timeout
 }
 
 
@@ -226,17 +236,22 @@ function playDemo(){
             //call button press 
             setTimeout(function(){computerPushButton(colorSequence[demoTurn]);}, 500);
             //call button release after a timeout
+            //////move the button release to a timeout in computepushbutton
+            /*
             setTimeout(function(){
                 computerUnPushButton(colorSequence[demoTurn]); 
                 demoTurn++;
                 window.console.log("playDemo incremented demoTurn to " + demoTurn);
             }, 1000);
+            */
             //after a time out call another function, that calls the button press
            
-            
+            //////move the callback of playDemo in computerunpushbutton
+            /*
             setTimeout(function(){
                 playDemo(); 
             }, 1500);//so it plays the next tone --> unfortunately this causes an infinite loop ugh -- it needs a timeout
+            */
             
         } else demoMode = false;
             window.console.log("playDemo has decided to stop");
