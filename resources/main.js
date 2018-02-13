@@ -2,7 +2,6 @@
 
 //nice to have: figure out how to sustain the tone, but let's not get worked up about it yet -> not all simon games sustained the note
 
-
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
 //TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now
@@ -163,15 +162,12 @@ function computerPushButton(padNum) {
             }, 1000);
 }
 
-
-
 function computerUnPushButton(padNum){
     document.getElementById(padNum).classList.remove("light");
     setTimeout(function(){
                 playDemo(); 
             }, 500);
 }
-
 
 //pressing start a game while a game is going starts a new game
 //though maybe we should instead create a reset button.
