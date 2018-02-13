@@ -211,18 +211,10 @@ function scoreCompare(num){
             //if not in strictmode
             //flash error in the counter
             flashMessage('!!', 3);
-            
-            /*
-            /////after flash message is done, only then should it return the counter, so have the update called by flash message
-            //set counter back to bigTurn, but only after we see the message
-            setTimeout(function() {updateCounter(bigTurn+1);}, 1500);
-            //reset littleTurn to 0 becasue we have to play the sequence from the start
-            */
             littleTurn = 0;
             //demo the sequence again
             window.console.log("you got it wrong so scoreCompare is calling playDemo");
             playDemo(); //is this needed here?
-            //somehow if you get it wrong it just plays the demo infinite times
         }
 }
 
