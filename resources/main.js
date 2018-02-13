@@ -20,10 +20,10 @@ let responseTime; //global for the timout variable
 
 //assign audio tones. These never change so using const declaration
 const tone1 = new Audio('resources/audio/simonSound1.mp3'); //highest ptich, blue button 
-const tone2 = new Audio('resources/audio/simonSound2.mp3'); //second highest, yellow button
-const tone3 = new Audio('resources/audio/simonSound3.mp3'); // third highest, red button
+const tone2 = new Audio('resources/audio/simonSound2.mp3'); //2n highest, yellow button
+const tone3 = new Audio('resources/audio/simonSound3.mp3'); // 3rd highest, red button
 const tone4 = new Audio('resources/audio/simonSound4.mp3'); //lowest pitch, green button
-//you can make an error tone by playing all the sounds at once
+//you can make an error tone by playing all the sounds at once. mabye
 
 const tones = ['', tone1, tone2, tone3, tone4]; 
 
@@ -180,6 +180,7 @@ function startGame(){
     //reset bigturn counter
     bigTurn = 0;
     littleTurn = 0;
+    demoTurn = 0;
     //set the toggle that the game is going
     gameGoing = true;
     //use a random number generator to generate the game sequence
