@@ -5,6 +5,7 @@
 
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
+//TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now
 
 let isConsoleActive = false;
 let strictMode = false;
@@ -213,6 +214,7 @@ function scoreCompare(num){
             flashMessage('!!', 3);
             demoTurn = 0;
             littleTurn = 0;
+            demoMode = true; //return to demomode, disabling player clicks
             //demo the sequence again
             window.console.log("you got it wrong so scoreCompare is calling playDemo, and resetting values. demoTurn: " + demoTurn + " littleTurn: " + littleTurn);
             setTimeout(function(){
@@ -226,7 +228,7 @@ function playDemo(){
     window.console.log("playDemo is checking if it needs to go");
     window.console.log("at the start of playDemo bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
 
-    if ((gameGoing === true) && (demoMode === true)){
+    if (gameGoing === true){
         updateCounter(bigTurn+1);
         if (demoTurn < (bigTurn+1)){
             window.console.log("playDemo has decided to go");
