@@ -168,7 +168,7 @@ function computerUnPushButton(padNum){
     document.getElementById(padNum).classList.remove("light");
     setTimeout(function(){
                 playDemo(); 
-            }, 500);//so it plays the next tone --> unfortunately this causes an infinite loop ugh -- it needs a timeout
+            }, 500);
 }
 
 
@@ -198,7 +198,9 @@ function scoreCompare(num){
             littleTurn = 0; 
             demoTurn = 0;
             window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
-            playDemo(); //it's playing and updating every time any key is right but actaully we only want to update bigTurn AND play the demo at the last item. I think. Is that what's happening?
+            setTimeout(function(){
+                playDemo(); 
+            }, 500);
         } else if (littleTurn < bigTurn){
             littleTurn++;
             window.console.log("littleTurn is updated by scoreCompare to " + littleTurn);
@@ -209,9 +211,13 @@ function scoreCompare(num){
             //if not in strictmode
             //flash error in the counter
             flashMessage('!!', 3);
+            
+            /*
+            /////after flash message is done, only then should it return the counter, so have the update called by flash message
             //set counter back to bigTurn, but only after we see the message
             setTimeout(function() {updateCounter(bigTurn+1);}, 1500);
             //reset littleTurn to 0 becasue we have to play the sequence from the start
+            */
             littleTurn = 0;
             //demo the sequence again
             window.console.log("you got it wrong so scoreCompare is calling playDemo");
@@ -221,7 +227,7 @@ function scoreCompare(num){
 }
 
 function playDemo(){
-    //no parameter, it uses the global littleTurn
+    //no parameter, it uses the global demoTurn
     window.console.log("playDemo is checking if it needs to go");
     window.console.log("at the start of playDemo bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
 
@@ -245,6 +251,9 @@ function flashMessage(message, times){
     //use class led-off to get the flashing effect visually
     document.getElementById('count').innerHTML = message;
     window.console.log("I'm dispalying the message " + message + " " + times + " times");
+    /////after flash message is done, only then should it return the counter, so have the update called by flash message
+            //set counter back to bigTurn, but only after we see the message
+            setTimeout(function() {updateCounter(bigTurn+1);}, 1500);
 }
 
 function updateCounter(num){
