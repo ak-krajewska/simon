@@ -191,7 +191,7 @@ function startGame(){
 function scoreCompare(num){
     //something is looping compareScore, calling it over and over
     if (num === colorSequence[littleTurn]){
-        window.console.log("you played "+ colorSequence[littleTurn] + " the right tone");
+        window.console.log("you played "+ num + " the right tone");
         if (littleTurn === bigTurn){
             demoMode = true;
             bigTurn++;
@@ -207,14 +207,17 @@ function scoreCompare(num){
         }
         
         } else if (num != colorSequence[littleTurn]){
-            window.console.log("you played "+ colorSequence[littleTurn] + " the wrong tone");
+            window.console.log("you played "+ num + " the wrong tone");
             //if not in strictmode
             //flash error in the counter
             flashMessage('!!', 3);
+            demoTurn = 0;
             littleTurn = 0;
             //demo the sequence again
-            window.console.log("you got it wrong so scoreCompare is calling playDemo");
-            playDemo(); //is this needed here?
+            window.console.log("you got it wrong so scoreCompare is calling playDemo, and resetting values. demoTurn: " + demoTurn + " littleTurn: " + littleTurn);
+            setTimeout(function(){
+                playDemo(); 
+            }, 1500);
         }
 }
 
