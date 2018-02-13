@@ -160,12 +160,18 @@ function playerUnPushButton(padNum){
 function startGame(){
     //reset bigturn counter
     bigTurn = 0;
+    littleTurn = 0;
     //set the toggle that the game is going
     gameGoing = true;
+    //use a random number generator to generate the game sequence
+    generateColorSequence();
+    window.console.log(colorSequence);
     //play the game
-    playGame();
+    playDemo();
 }
 
+/*
+//this function needs to be rolled back into start game, because it's just an unnecessary passthrough
 function playGame(){
     //use a random number generator to generate the game sequence
     generateColorSequence();
@@ -176,20 +182,14 @@ function playGame(){
     //setTimeout(function() {playerUnPushButton(colorSequence[littleTurn]); }, 500);
     littleTurn = 0;
     playDemo(); //or should it be bigTurn+1? -- not it's littleTurn, if anything
-    //I suspect this timeout score compare is causing stupidness
-    /*
-    responseTime = setTimeout(function(){
-        scoreCompare(colorSequence[littleTurn]); 
-    }, 3000);
-    */
     //activate the color pad 
-    demoMode = false; //is this actually necessary?
-}
+    //demoMode = false; //is this actually necessary?
+} */
 
 function scoreCompare(num){
     //something is looping compareScore, calling it over and over
     if (num === colorSequence[littleTurn]){
-        window.console.log("you played the right tone");
+        window.console.log("you played "+ colorSequence[littleTurn] + " the right tone");
         if (littleTurn === bigTurn){
             demoMode = true;
             bigTurn++;
@@ -203,7 +203,7 @@ function scoreCompare(num){
         }
         
         } else if (num != colorSequence[littleTurn]){
-            window.console.log("you played the wrong tone");
+            window.console.log("you played "+ colorSequence[littleTurn] + " the wrong tone");
             //if not in strictmode
             //flash error in the counter
             flashMessage('!!', 3);
@@ -223,9 +223,9 @@ function playDemo(){
     window.console.log("playDemo is going");
     window.console.log("at the stat of playDemo bigTurn is " + bigTurn);
     window.console.log("at the start of playDemo littleTurn is " + littleTurn);
-    if (gameGoing === true){
+    if ((gameGoing === true) && (demoMode === true)){
         updateCounter(bigTurn+1);
-        if (littleTurn <= bigTurn){
+        if (littleTurn < (bigTurn+1)){
             //call button press 
             setTimeout(function(){computerPushButton(colorSequence[littleTurn]);}, 500);
             //call button release after a timeout
@@ -233,11 +233,14 @@ function playDemo(){
             //after a time out call another function, that calls the button press
             littleTurn++;
             window.console.log("playDemo incremented little turn to " + littleTurn);
-            responseTime = setTimeout(function(){
-                littleTurn = 0;
-                playDemo(); 
-                window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time? 
+            playDemo(); //so it plays the next tone --> unfortunately this causes an infinite loop ugh
+            
         } else demoMode = false;
+            return; //is this necessary?
+           /* responseTime = setTimeout(function(){
+                    littleTurn = 0;
+                    playDemo(); 
+                    window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time, yes and pushing button wasn't clearing it but it is now? */
     } else return;
     
 }
