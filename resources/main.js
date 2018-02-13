@@ -233,7 +233,7 @@ function playDemo(){
             //after a time out call another function, that calls the button press
             littleTurn++;
             window.console.log("playDemo incremented little turn to " + littleTurn);
-            setTimeout(function(){
+            responseTime = setTimeout(function(){
                 littleTurn = 0;
                 playDemo(); 
                 window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time? 
