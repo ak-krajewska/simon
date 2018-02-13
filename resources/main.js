@@ -183,7 +183,7 @@ function playGame(){
     }, 3000);
     */
     //activate the color pad 
-    demoMode = false; 
+    demoMode = false; //is this actually necessary?
 }
 
 function scoreCompare(num){
@@ -213,7 +213,7 @@ function scoreCompare(num){
             littleTurn = 0;
             //demo the sequence again
             window.console.log("you got it wrong so scoreCompare is calling playDemo");
-            playDemo(); 
+            playDemo(); //is this needed here?
             //somehow if you get it wrong it just plays the demo infinite times
         }
 }
@@ -224,7 +224,7 @@ function playDemo(){
     window.console.log("at the stat of playDemo bigTurn is " + bigTurn);
     window.console.log("at the start of playDemo littleTurn is " + littleTurn);
     if (gameGoing === true){
-        
+        updateCounter(bigTurn+1);
         if (littleTurn <= bigTurn){
             //call button press 
             setTimeout(function(){computerPushButton(colorSequence[littleTurn]);}, 500);
@@ -236,7 +236,7 @@ function playDemo(){
             setTimeout(function(){
                 littleTurn = 0;
                 playDemo(); 
-                window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time?
+                window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time? 
         } else demoMode = false;
     } else return;
     
