@@ -195,12 +195,9 @@ function scoreCompare(num){
         if (littleTurn === bigTurn){
             demoMode = true;
             bigTurn++;
-            window.console.log("bigTurn is updated by scoreCompare to " + bigTurn);
             littleTurn = 0; 
-            window.console.log("littleTurn is reset by scoreCompare to " + littleTurn);
             demoTurn = 0;
-            window.console.log("demoTurn is reset by scoreCompare to " + demoTurn);
-            window.console.log("scoreCompare is calling playDemo()");
+            window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
             playDemo(); //it's playing and updating every time any key is right but actaully we only want to update bigTurn AND play the demo at the last item. I think. Is that what's happening?
         } else if (littleTurn < bigTurn){
             littleTurn++;
@@ -226,40 +223,18 @@ function scoreCompare(num){
 function playDemo(){
     //no parameter, it uses the global littleTurn
     window.console.log("playDemo is checking if it needs to go");
-    window.console.log("at the stat of playDemo bigTurn is " + bigTurn);
-    window.console.log("at the start of playDemo littleTurn is " + littleTurn);
-    window.console.log("at the start of playDemo demoTurn is " + demoTurn);
+    window.console.log("at the start of playDemo bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
+
     if ((gameGoing === true) && (demoMode === true)){
         updateCounter(bigTurn+1);
         if (demoTurn < (bigTurn+1)){
             window.console.log("playDemo has decided to go");
             //call button press 
             setTimeout(function(){computerPushButton(colorSequence[demoTurn]);}, 500);
-            //call button release after a timeout
-            //////move the button release to a timeout in computepushbutton
-            /*
-            setTimeout(function(){
-                computerUnPushButton(colorSequence[demoTurn]); 
-                demoTurn++;
-                window.console.log("playDemo incremented demoTurn to " + demoTurn);
-            }, 1000);
-            */
-            //after a time out call another function, that calls the button press
-           
-            //////move the callback of playDemo in computerunpushbutton
-            /*
-            setTimeout(function(){
-                playDemo(); 
-            }, 1500);//so it plays the next tone --> unfortunately this causes an infinite loop ugh -- it needs a timeout
-            */
             
         } else demoMode = false;
             window.console.log("playDemo has decided to stop");
             return; //is this necessary?
-           /* responseTime = setTimeout(function(){
-                    littleTurn = 0;
-                    playDemo(); 
-                    window.console.log("demo plays due to timeout");}, 3000); //==> is this calling playDemo that second time, yes and pushing button wasn't clearing it but it is now? */
     } else return;
     
 }
