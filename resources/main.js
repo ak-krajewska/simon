@@ -13,6 +13,7 @@ let colorSequence = [];
 let demoMode = true; //used to disable playpad while the computer is demoing sequence
 let bigTurn = 0; //this is what step in the game as a whole we are in, also corresponds to the number of plays the player has to make to get this turn correct (bigTurn+1) eg we are on the 2n'd turn, bigTurm is 1, player has to make 2 correct plays
 let littleTurn = 0; //this is the current button press within the current bigTurn
+let demoTurn = 0; //this is where the demo is, which hopefully will prevent confusion with the button press but who knows
 let responseTime; //global for the timout variable
 
 
@@ -137,7 +138,6 @@ function playerPushButton(padNum) {
         tones[padNum].load(); //so the sound plays more than once
         tones[padNum].play(); //will need a way to prolong the noise
         clearTimeout(responseTime);
-        scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
     } else return;
     
 }
@@ -150,6 +150,14 @@ function computerPushButton(padNum) {
 }
 
 function playerUnPushButton(padNum){
+    if (demoMode === false){
+        document.getElementById(padNum).classList.remove("light");
+        scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
+    }
+}
+    
+
+function computerUnPushButton(padNum){
     document.getElementById(padNum).classList.remove("light");
 }
 
@@ -170,22 +178,6 @@ function startGame(){
     playDemo();
 }
 
-/*
-//this function needs to be rolled back into start game, because it's just an unnecessary passthrough
-function playGame(){
-    //use a random number generator to generate the game sequence
-    generateColorSequence();
-    window.console.log(colorSequence);
-    //play the first tone
-    //document.getElementById('count').innerHTML = '01';
-    //computerPushButton(colorSequence[littleTurn]);
-    //setTimeout(function() {playerUnPushButton(colorSequence[littleTurn]); }, 500);
-    littleTurn = 0;
-    playDemo(); //or should it be bigTurn+1? -- not it's littleTurn, if anything
-    //activate the color pad 
-    //demoMode = false; //is this actually necessary?
-} */
-
 function scoreCompare(num){
     //something is looping compareScore, calling it over and over
     if (num === colorSequence[littleTurn]){
@@ -195,6 +187,9 @@ function scoreCompare(num){
             bigTurn++;
             window.console.log("bigTurn is updated by scoreCompare to " + bigTurn);
             littleTurn = 0; 
+            window.console.log("littleTurn is reset by scoreCompare to " + littleTurn);
+            demoTurn = 0;
+            window.console.log("demoTurn is reset by scoreCompare to " + demoTurn);
             window.console.log("scoreCompare is calling playDemo()");
             playDemo(); //it's playing and updating every time any key is right but actaully we only want to update bigTurn AND play the demo at the last item. I think. Is that what's happening?
         } else if (littleTurn < bigTurn){
@@ -220,22 +215,31 @@ function scoreCompare(num){
 
 function playDemo(){
     //no parameter, it uses the global littleTurn
-    window.console.log("playDemo is going");
+    window.console.log("playDemo is checking if it needs to go");
     window.console.log("at the stat of playDemo bigTurn is " + bigTurn);
     window.console.log("at the start of playDemo littleTurn is " + littleTurn);
+    window.console.log("at the start of playDemo demoTurn is " + demoTurn);
     if ((gameGoing === true) && (demoMode === true)){
         updateCounter(bigTurn+1);
-        if (littleTurn < (bigTurn+1)){
+        if (demoTurn < (bigTurn+1)){
+            window.console.log("playDemo has decided to go");
             //call button press 
-            setTimeout(function(){computerPushButton(colorSequence[littleTurn]);}, 500);
+            setTimeout(function(){computerPushButton(colorSequence[demoTurn]);}, 500);
             //call button release after a timeout
-            setTimeout(function(){playerUnPushButton(colorSequence[littleTurn]); }, 1000);
+            setTimeout(function(){
+                computerUnPushButton(colorSequence[demoTurn]); 
+                demoTurn++;
+                window.console.log("playDemo incremented demoTurn to " + demoTurn);
+            }, 1000);
             //after a time out call another function, that calls the button press
-            littleTurn++;
-            window.console.log("playDemo incremented little turn to " + littleTurn);
-            playDemo(); //so it plays the next tone --> unfortunately this causes an infinite loop ugh
+           
+            
+            setTimeout(function(){
+                playDemo(); 
+            }, 1500);//so it plays the next tone --> unfortunately this causes an infinite loop ugh -- it needs a timeout
             
         } else demoMode = false;
+            window.console.log("playDemo has decided to stop");
             return; //is this necessary?
            /* responseTime = setTimeout(function(){
                     littleTurn = 0;
