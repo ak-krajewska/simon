@@ -5,8 +5,6 @@
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
 //TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now
-//TODO: create a victory condtion
-//TODO: implement strictmode
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
 //TODO: set the victory condition back to 20 when you're done with testing
 
@@ -54,6 +52,7 @@ function toggleConsole(){
         //deactivate count window
         document.getElementById('count').setAttribute('class', "count led-off");
         //stop the current game
+        strictMode = false;
         gameGoing = false;
     } else {
         document.getElementById('power-switch').setAttribute('class', "switch switch-on");
@@ -75,12 +74,10 @@ function toggleStrict(){
     window.console.log("toggle strict mode");
     if (strictMode === true){
         document.getElementById('mode-led').setAttribute('class', "led");
-        //set the strictMode to false
         strictMode = false;   
     } else {
         //set indicator button to red 
         document.getElementById('mode-led').setAttribute('class', "led led-on");
-        //set the strictMode to true
         strictMode = true;
     } 
 }
@@ -139,8 +136,8 @@ function unPushGreen(){
 function playerPushButton(padNum) {
     if (demoMode === false){
         document.getElementById(padNum).classList.add("light");
-        tones[padNum].load(); //so the sound plays more than once
-        tones[padNum].play(); //will need a way to prolong the noise
+        tones[padNum].load(); 
+        tones[padNum].play(); 
         clearTimeout(responseTime);
     } else return;
     
@@ -155,12 +152,10 @@ function playerUnPushButton(padNum){
 
 function computerPushButton(padNum) {
     document.getElementById(padNum).classList.add("light");
-    tones[padNum].load(); //need to do this or else the sound will only play the first time
-    tones[padNum].play(); //will need a way to prolong the noise
-    //add a number to playerSequence array
+    tones[padNum].load(); 
+    tones[padNum].play(); 
     setTimeout(function(){
                 computerUnPushButton(colorSequence[demoTurn]); 
-                /////move the demoturn increment to computer unpushbutton maybe, or even another function to prevent confusion
                 demoTurn++;
                 window.console.log("computerUnPushButton incremented demoTurn to " + demoTurn);
             }, 600);
@@ -174,10 +169,9 @@ function computerUnPushButton(padNum){
 }
 
 //pressing start a game while a game is going starts a new game
-//though maybe we should instead create a reset button.
-//it is allowed to toggle strict mode while a game is in progress (that's weird)
+//it is allowed to toggle strict mode while a game is in progress 
 function startGame(){
-    //reset bigturn counter
+    //reset turn counters
     bigTurn = 0;
     littleTurn = 0;
     demoTurn = 0;
