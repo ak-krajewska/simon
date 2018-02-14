@@ -222,20 +222,30 @@ function scoreCompare(num){
             littleTurn++;
             window.console.log("littleTurn is updated by scoreCompare to " + littleTurn);
         }
-        
+        //if you got it wrong
         } else if (num != colorSequence[littleTurn]){
             window.console.log("you played "+ num + " the wrong tone");
-            //if not in strictmode
-            //flash error in the counter
-            flashMessage('!!', 3);
-            demoTurn = 0;
-            littleTurn = 0;
-            demoMode = true; //return to demomode, disabling player clicks
-            //demo the sequence again
-            window.console.log("you got it wrong so scoreCompare is calling playDemo, and resetting values. demoTurn: " + demoTurn + " littleTurn: " + littleTurn);
-            setTimeout(function(){
-                playDemo(); 
-            }, 1500);
+            //if strictmode
+            if (strictMode === true){
+                //error message
+                flashMessage('!!', 3);
+                //start a new game
+                setTimeout(function(){
+                    startGame(); 
+                }, 1500);
+            } else if (strictMode === false){
+                //if not in strictmode
+                //flash error in the counter
+                flashMessage('!!', 3);
+                demoTurn = 0;
+                littleTurn = 0;
+                demoMode = true; //return to demomode, disabling player clicks
+                //demo the sequence again
+                window.console.log("you got it wrong so scoreCompare is calling playDemo, and resetting values. demoTurn: " + demoTurn + " littleTurn: " + littleTurn);
+                setTimeout(function(){
+                    playDemo(); 
+                }, 1500);
+            }
         }
 }
 
