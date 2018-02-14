@@ -8,6 +8,7 @@
 //TODO: create a victory condtion
 //TODO: implement strictmode
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
+//TODO: set the victory condition back to 20 when you're done with testing
 
 let isConsoleActive = false;
 let strictMode = false;
@@ -185,6 +186,7 @@ function startGame(){
     //use a random number generator to generate the game sequence
     generateColorSequence();
     window.console.log(colorSequence);
+    //maybe flash the counter to indicate a new game is starting
     //play the game
     setTimeout(function(){
                 playDemo(); 
@@ -196,14 +198,26 @@ function scoreCompare(num){
     if (num === colorSequence[littleTurn]){
         window.console.log("you played "+ num + " the right tone");
         if (littleTurn === bigTurn){
-            demoMode = true;
-            bigTurn++;
-            littleTurn = 0; 
-            demoTurn = 0;
-            window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
-            setTimeout(function(){
-                playDemo(); 
-            }, 500);
+            //check for victory condition
+            if (littleTurn === (colorSequence.length - 1)){
+                //do victory stuff
+                gameGoing = false;
+                flashMessage("**", 5);
+                victorySong();
+                setTimeout(function(){
+                    //start a new game
+                    startGame();
+                }, 5000);
+            } else if (littleTurn != (colorSequence.length - 1)){
+                demoMode = true;
+                bigTurn++;
+                littleTurn = 0; 
+                demoTurn = 0;
+                window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
+                setTimeout(function(){
+                    playDemo(); 
+                }, 500);
+            }
         } else if (littleTurn < bigTurn){
             littleTurn++;
             window.console.log("littleTurn is updated by scoreCompare to " + littleTurn);
@@ -269,14 +283,38 @@ function getRandomIntInclusive(min, max) {
 
 function generateColorSequence(){
     colorSequence = [];
-    for (let i=0; i < 20; i++){
+    //fore testing purposes doing win at 5 instead of 20
+    for (let i=0; i < 3; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
     }
 }
 
+//lots of copy pasting here, better come up with a way automate/streamline
 function victorySong() {
-    setTimeout(function(){tone1.play();}, 100);
-    setTimeout(function(){tone2.play();}, 300);
-    setTimeout(function(){tone3.play();}, 500);
-    setTimeout(function(){tone4.play();}, 700);
+    setTimeout(function(){
+        tones[1].load(); //so the sound plays more than once
+        tones[1].play(); //will need a way to prolong the noise
+    }, 100);
+    setTimeout(function(){
+        tones[2].load(); //so the sound plays more than once
+        tones[2].play(); //will need a way to prolong the noise
+    }, 300);
+    setTimeout(function(){
+        tones[3].load(); //so the sound plays more than once
+        tones[3].play(); //will need a way to prolong the noise
+    }, 500);
+    setTimeout(function(){
+        tones[4].load(); //so the sound plays more than once
+        tones[4].play(); //will need a way to prolong the noise
+    }, 700);
+}
+
+//not sure it really makes senst to have this as a function but we'll see
+function detectVictory(){
+    if (littleTurn === (colorSequence.length - 1)){
+        window.console.log("you won!");
+        //play victory tune
+        victorySong();
+        //start the game again after a timeout long enough for the victory song to do its thing
+    }
 }
