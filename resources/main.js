@@ -5,6 +5,9 @@
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
 //TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now
+//TODO: create a victory condtion
+//TODO: implement strictmode
+//TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
 
 let isConsoleActive = false;
 let strictMode = false;
@@ -183,7 +186,9 @@ function startGame(){
     generateColorSequence();
     window.console.log(colorSequence);
     //play the game
-    playDemo();
+    setTimeout(function(){
+                playDemo(); 
+            }, 500);
 }
 
 function scoreCompare(num){
@@ -231,7 +236,7 @@ function playDemo(){
             window.console.log("playDemo has decided to go");
             //call button press 
             setTimeout(function(){computerPushButton(colorSequence[demoTurn]);}, 500);
-            
+
         } else demoMode = false;
             window.console.log("playDemo has decided to stop");
             return; //is this necessary?
@@ -256,7 +261,6 @@ function updateCounter(num){
     } else document.getElementById('count').innerHTML = "0" + num;
 }
 
- //getRandomIntInclusive from MDN https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 function getRandomIntInclusive(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
@@ -270,10 +274,9 @@ function generateColorSequence(){
     }
 }
 
-//this ends up playing all the sounds at the same time so we'll need to rethink it
 function victorySong() {
     setTimeout(function(){tone1.play();}, 100);
-    setTimeout(function(){tone2.play();}, 500);
-    setTimeout(function(){tone3.play();}, 900);
-    setTimeout(function(){tone4.play();}, 1300);
+    setTimeout(function(){tone2.play();}, 300);
+    setTimeout(function(){tone3.play();}, 500);
+    setTimeout(function(){tone4.play();}, 700);
 }
