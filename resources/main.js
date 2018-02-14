@@ -159,14 +159,14 @@ function computerPushButton(padNum) {
                 /////move the demoturn increment to computer unpushbutton maybe, or even another function to prevent confusion
                 demoTurn++;
                 window.console.log("computerUnPushButton incremented demoTurn to " + demoTurn);
-            }, 1000);
+            }, 600);
 }
 
 function computerUnPushButton(padNum){
     document.getElementById(padNum).classList.remove("light");
     setTimeout(function(){
                 playDemo(); 
-            }, 500);
+            }, 50);
 }
 
 //pressing start a game while a game is going starts a new game
