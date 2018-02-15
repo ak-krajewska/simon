@@ -7,6 +7,7 @@
 //TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
 //TODO: set the victory condition back to 20 when you're done with testing
+//TODO: reactivate the timeout end when the player presses if it's not already active
 
 let isConsoleActive = false;
 let strictMode = false;
@@ -17,6 +18,7 @@ let bigTurn = 0; //this is what step in the game as a whole we are in, also corr
 let littleTurn = 0; //this is the current button press within the current bigTurn
 let demoTurn = 0; //this is where the demo is, which hopefully will prevent confusion with the button press but who knows
 let responseTime; //global for the timout variable
+let nextGameTimeOutID; //global so turning of the console prevents the next game starting automatically
 
 
 //assign audio tones. These never change so using const declaration
@@ -54,6 +56,7 @@ function toggleConsole(){
         //stop the current game
         strictMode = false;
         gameGoing = false;
+        clearTimeout(nextGameTimeOutID);
     } else {
         document.getElementById('power-switch').setAttribute('class', "switch switch-on");
         isConsoleActive = true;
@@ -135,10 +138,10 @@ function unPushGreen(){
 
 function playerPushButton(padNum) {
     if (demoMode === false){
+        clearTimeout(responseTime);
         document.getElementById(padNum).classList.add("light");
         tones[padNum].load(); 
         tones[padNum].play(); 
-        clearTimeout(responseTime);
     } else return;
     
 }
@@ -154,6 +157,7 @@ function computerPushButton(padNum) {
     document.getElementById(padNum).classList.add("light");
     tones[padNum].load(); 
     tones[padNum].play(); 
+    window.console.log("computerPushButton is playing " + padNum);
     setTimeout(function(){
                 computerUnPushButton(colorSequence[demoTurn]); 
                 demoTurn++;
@@ -198,7 +202,8 @@ function scoreCompare(num){
                 gameGoing = false;
                 flashMessage("**", 5);
                 victorySong();
-                setTimeout(function(){
+                //need a way to clear this long ass timeout in case the player turns off the console
+                nextGameTimeOutID = setTimeout(function(){
                     //start a new game
                     startGame();
                 }, 5000);
@@ -245,19 +250,24 @@ function scoreCompare(num){
 
 function playDemo(){
     //no parameter, it uses the global demoTurn
-    window.console.log("playDemo is checking if it needs to go");
-    window.console.log("at the start of playDemo bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
-
     if (gameGoing === true){
         updateCounter(bigTurn+1);
-        if (demoTurn < (bigTurn+1)){
+        window.console.log("playDemo is checking if it needs to go");
+        window.console.log("at the start of playDemo bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
+        //if (demoTurn < (bigTurn+1)){
+        if (demoTurn <= bigTurn){
             window.console.log("playDemo has decided to go");
             //call button press 
             setTimeout(function(){computerPushButton(colorSequence[demoTurn]);}, 500);
 
-        } else demoMode = false;
-            window.console.log("playDemo has decided to stop");
-            return; //is this necessary?
+        } else if (demoTurn > bigTurn){
+                demoMode = false;
+                window.console.log("playDemo has decided to stop");
+                //if no one presses the button in time, set them up to fail in scoreCompare
+            //somehow this gives less time than it should on subsequent presses, like it's getting reset too soon maybe?
+                //responseTime = setTimeout(scoreCompare, 3000);
+                //return; //is this necessary?
+        }
     } else return;
     
 }
