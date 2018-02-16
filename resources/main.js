@@ -2,9 +2,7 @@
 
 //nice to have: figure out how to sustain the tone, but let's not get worked up about it yet -> not all simon games sustained the note
 
-//victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
-//TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now--- the css is cursor: pointer
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
 //TODO: set the victory condition back to 20 when you're done with testing
 
@@ -12,21 +10,18 @@ let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
-let demoMode = true; //used to disable playpad while the computer is demoing sequence
-let bigTurn = 0; //this is what step in the game as a whole we are in
-let littleTurn = 0; //this is the current player button press within the current bigTurn
-let demoTurn = 0; //this is where the demo 
+let demoMode = true; //disables playpad 
+let bigTurn = 0; //which step of the game as a whole
+let littleTurn = 0; //the current player button press within the current bigTurn
+let demoTurn = 0; //current computer turn in the demo
 let responseTime; //global for the timout variable
 let nextGameTimeOutID; //global so turning of the console prevents the next game starting automatically
-
 
 //assign audio tones. These never change so using const declaration
 const tone1 = new Audio('resources/audio/simonSound1.mp3'); //highest ptich, blue button 
 const tone2 = new Audio('resources/audio/simonSound2.mp3'); //2n highest, yellow button
 const tone3 = new Audio('resources/audio/simonSound3.mp3'); // 3rd highest, red button
 const tone4 = new Audio('resources/audio/simonSound4.mp3'); //lowest pitch, green button
-//you can make an error tone by playing all the sounds at once. mabye
-
 const tones = ['', tone1, tone2, tone3, tone4]; 
 
 activateGamePad();
