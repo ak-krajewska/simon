@@ -2,9 +2,9 @@
 
 //nice to have: figure out how to sustain the tone, but let's not get worked up about it yet -> not all simon games sustained the note
 
-//todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
 //TODO: set the victory condition back to 20 when you're done with testing
+//TODO: reorder the way the functions appear so that code is easier to read
 
 let isConsoleActive = false;
 let strictMode = false;
@@ -90,49 +90,6 @@ function activateGamePad(){
     document.getElementById('4').addEventListener('mousedown', playerPushButton);
     document.getElementById('4').addEventListener('mouseup', playerUnPushButton);
 }
-
-/*
-function pushBlue(){
-    if (demoMode === false){
-        playerPushButton(1);
-    } else return;  
-}
-
-function unPushBlue(){
-   playerUnPushButton(1);
-}
-
-function pushYellow(){
-   if (demoMode === false){
-        playerPushButton(2);
-    } else return;  
-}
-
-function unPushYellow(){
-   playerUnPushButton(2);
-}
-
-function pushRed(){
-   if (demoMode === false){
-        playerPushButton(3);
-    } else return;  
-}
-
-function unPushRed(){
-    playerUnPushButton(3);
-}
-
-function pushGreen(){
-   if (demoMode === false){
-        playerPushButton(4);
-    } else return;  
-}
-
-function unPushGreen(){
-    playerUnPushButton(4);
-}
-
-*/
 
 function playerPushButton() {
     if (demoMode === false){
@@ -310,7 +267,10 @@ function generateColorSequence(){
 }
 
 function victorySong(num) {
-    let victorySounds = [1, 2, 1, 3, 2, 3, 4, 3, 4];
+    //let victorySounds = [1, 2, 1, 3, 2, 3, 4, 3, 4];
+    let victorySounds = [4, 4, 3, 3, 1, 1, 2, 2, 4, 3, 1, 2];
+    
+    document.getElementById(victorySounds[num]).classList.add("light");
     tones[victorySounds[num]].load();
     tones[victorySounds[num]].play();
     if (num < (victorySounds.length-1)){
@@ -318,9 +278,10 @@ function victorySong(num) {
         num++;
         window.console.log("victory song num incremented to: " + num);
         setTimeout(function(){
+            document.getElementById(victorySounds[num-1]).classList.remove("light");
             victorySong(num);
-        }, 200);
-    }
+        }, 210);
+    } else document.getElementById(victorySounds[num]).classList.remove("light");
 }
 
 //not sure it really makes senst to have this as a function but we'll see
