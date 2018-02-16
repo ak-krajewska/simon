@@ -255,3 +255,7 @@
 .row.bot{
   margin-top: 10px;
 }
+
+.activeCursor{
+    cursor: pointer;
+}

@@ -4,7 +4,7 @@
 
 //victory tone is playing the entire sequence, then flashing the circle, or something like that.
 //todo: take the numberpad event listiners, make them one big event listiner that acts differently depending on which number ID was pressed, ie abstract it further
-//TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now
+//TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now--- the css is cursor: pointer
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
 //TODO: set the victory condition back to 20 when you're done with testing
 //TODO: reactivate the timeout end when the player presses if it's not already active
@@ -56,6 +56,7 @@ function toggleConsole(){
         //stop the current game
         strictMode = false;
         gameGoing = false;
+        deActivateCursor();
         clearTimeout(nextGameTimeOutID);
     } else {
         document.getElementById('power-switch').setAttribute('class', "switch switch-on");
@@ -179,6 +180,8 @@ function startGame(){
     bigTurn = 0;
     littleTurn = 0;
     demoTurn = 0;
+    demoMode = true;
+    deActivateCursor();
     //set the toggle that the game is going
     gameGoing = true;
     //use a random number generator to generate the game sequence
@@ -201,6 +204,8 @@ function scoreCompare(num){
                 //do victory stuff
                 gameGoing = false;
                 flashMessage("**", 5);
+                demoMode = true;
+                deActivateCursor();
                 victorySong();
                 //need a way to clear this long ass timeout in case the player turns off the console
                 nextGameTimeOutID = setTimeout(function(){
@@ -209,6 +214,7 @@ function scoreCompare(num){
                 }, 5000);
             } else if (littleTurn != (colorSequence.length - 1)){
                 demoMode = true;
+                deActivateCursor();
                 bigTurn++;
                 littleTurn = 0; 
                 demoTurn = 0;
@@ -240,6 +246,7 @@ function scoreCompare(num){
                 littleTurn = 0;
                 demoMode = true; //return to demomode, disabling player clicks
                 //demo the sequence again
+                deActivateCursor();
                 window.console.log("you got it wrong so scoreCompare is calling playDemo, and resetting values. demoTurn: " + demoTurn + " littleTurn: " + littleTurn);
                 setTimeout(function(){
                     playDemo(); 
@@ -262,6 +269,7 @@ function playDemo(){
 
         } else if (demoTurn > bigTurn){
                 demoMode = false;
+                activateCursor();
                 window.console.log("playDemo has decided to stop");
                 //if no one presses the button in time, set them up to fail in scoreCompare
             //somehow this gives less time than it should on subsequent presses, like it's getting reset too soon maybe?
@@ -331,4 +339,18 @@ function detectVictory(){
         victorySong();
         //start the game again after a timeout long enough for the victory song to do its thing
     }
+}
+
+function activateCursor(){
+    document.getElementById('1').classList.add("activeCursor");
+    document.getElementById('2').classList.add("activeCursor");
+    document.getElementById('3').classList.add("activeCursor");
+    document.getElementById('4').classList.add("activeCursor");
+}
+
+function deActivateCursor(){
+    document.getElementById('1').classList.remove("activeCursor");
+    document.getElementById('2').classList.remove("activeCursor");
+    document.getElementById('3').classList.remove("activeCursor");
+    document.getElementById('4').classList.remove("activeCursor");
 }
