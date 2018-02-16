@@ -261,13 +261,12 @@ function getRandomIntInclusive(min, max) {
 function generateColorSequence(){
     colorSequence = [];
     //fore testing purposes doing win at 5 instead of 20
-    for (let i=0; i < 3; i++){
+    for (let i=0; i < 20; i++){
         colorSequence.push(getRandomIntInclusive(1, 4));
     }
 }
 
 function victorySong(num) {
-    //let victorySounds = [1, 2, 1, 3, 2, 3, 4, 3, 4];
     let victorySounds = [4, 4, 3, 3, 1, 1, 2, 2, 4, 3, 1, 2];
     
     document.getElementById(victorySounds[num]).classList.add("light");
@@ -282,16 +281,6 @@ function victorySong(num) {
             victorySong(num);
         }, 210);
     } else document.getElementById(victorySounds[num]).classList.remove("light");
-}
-
-//not sure it really makes senst to have this as a function but we'll see
-function detectVictory(){
-    if (littleTurn === (colorSequence.length - 1)){
-        //window.console.log("you won!");
-        //play victory tune
-        victorySong();
-        //start the game again after a timeout long enough for the victory song to do its thing
-    }
 }
 
 function activateCursor(){
