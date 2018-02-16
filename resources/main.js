@@ -7,16 +7,15 @@
 //TODO: change how the mouse pointer looks between demoMode and interactive mode so player knows they can click now--- the css is cursor: pointer
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
 //TODO: set the victory condition back to 20 when you're done with testing
-//TODO: reactivate the timeout end when the player presses if it's not already active
 
 let isConsoleActive = false;
 let strictMode = false;
 let gameGoing = false;
 let colorSequence = [];
 let demoMode = true; //used to disable playpad while the computer is demoing sequence
-let bigTurn = 0; //this is what step in the game as a whole we are in, also corresponds to the number of plays the player has to make to get this turn correct (bigTurn+1) eg we are on the 2n'd turn, bigTurm is 1, player has to make 2 correct plays
-let littleTurn = 0; //this is the current button press within the current bigTurn
-let demoTurn = 0; //this is where the demo is, which hopefully will prevent confusion with the button press but who knows
+let bigTurn = 0; //this is what step in the game as a whole we are in
+let littleTurn = 0; //this is the current player button press within the current bigTurn
+let demoTurn = 0; //this is where the demo 
 let responseTime; //global for the timout variable
 let nextGameTimeOutID; //global so turning of the console prevents the next game starting automatically
 
@@ -41,7 +40,7 @@ function toggleConsole(){
         //if switch-on class exists, remove it, and toggle isConsoleActive
         document.getElementById('power-switch').setAttribute('class', "switch");
         isConsoleActive = false;
-         window.console.log("isConsoleActive = " + isConsoleActive);
+         //window.console.log("isConsoleActive = " + isConsoleActive);
         //deactivate gamepad buttons
         //deactivate start button
         document.getElementById('start').setAttribute('class', "round-btn-red");
@@ -61,7 +60,7 @@ function toggleConsole(){
     } else {
         document.getElementById('power-switch').setAttribute('class', "switch switch-on");
         isConsoleActive = true;
-        window.console.log("isConsoleActive = " + isConsoleActive);
+        //window.console.log("isConsoleActive = " + isConsoleActive);
         //activate start button
         document.getElementById('start').setAttribute('class', "round-btn-red clickable");
         document.getElementById('start').addEventListener('click', startGame);
@@ -75,7 +74,7 @@ function toggleConsole(){
 }
 
 function toggleStrict(){
-    window.console.log("toggle strict mode");
+    //window.console.log("toggle strict mode");
     if (strictMode === true){
         document.getElementById('mode-led').setAttribute('class', "led");
         strictMode = false;   
@@ -158,11 +157,11 @@ function computerPushButton(padNum) {
     document.getElementById(padNum).classList.add("light");
     tones[padNum].load(); 
     tones[padNum].play(); 
-    window.console.log("computerPushButton is playing " + padNum);
+    //window.console.log("computerPushButton is playing " + padNum);
     setTimeout(function(){
                 computerUnPushButton(colorSequence[demoTurn]); 
                 demoTurn++;
-                window.console.log("computerUnPushButton incremented demoTurn to " + demoTurn);
+                //window.console.log("computerUnPushButton incremented demoTurn to " + demoTurn);
             }, 600);
 }
 
@@ -186,7 +185,7 @@ function startGame(){
     gameGoing = true;
     //use a random number generator to generate the game sequence
     generateColorSequence();
-    window.console.log(colorSequence);
+    //window.console.log(colorSequence);
     //maybe flash the counter to indicate a new game is starting
     //play the game
     setTimeout(function(){
@@ -197,16 +196,16 @@ function startGame(){
 function scoreCompare(num){
     //something is looping compareScore, calling it over and over
     if (num === colorSequence[littleTurn]){
-        window.console.log("you played "+ num + " the right tone");
+        //window.console.log("you played "+ num + " the right tone");
         if (littleTurn === bigTurn){
             //check for victory condition
             if (littleTurn === (colorSequence.length - 1)){
                 //do victory stuff
                 gameGoing = false;
-                flashMessage("**", 5);
+                flashMessage("V", 5);
                 demoMode = true;
                 deActivateCursor();
-                victorySong();
+                victorySong(0);
                 //need a way to clear this long ass timeout in case the player turns off the console
                 nextGameTimeOutID = setTimeout(function(){
                     //start a new game
@@ -218,18 +217,18 @@ function scoreCompare(num){
                 bigTurn++;
                 littleTurn = 0; 
                 demoTurn = 0;
-                window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
+                //window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
                 setTimeout(function(){
                     playDemo(); 
                 }, 500);
             }
         } else if (littleTurn < bigTurn){
             littleTurn++;
-            window.console.log("littleTurn is updated by scoreCompare to " + littleTurn);
+            //window.console.log("littleTurn is updated by scoreCompare to " + littleTurn);
         }
         //if you got it wrong
         } else if (num != colorSequence[littleTurn]){
-            window.console.log("you played "+ num + " the wrong tone");
+            //window.console.log("you played "+ num + " the wrong tone");
             //if strictmode
             if (strictMode === true){
                 //error message
@@ -247,7 +246,7 @@ function scoreCompare(num){
                 demoMode = true; //return to demomode, disabling player clicks
                 //demo the sequence again
                 deActivateCursor();
-                window.console.log("you got it wrong so scoreCompare is calling playDemo, and resetting values. demoTurn: " + demoTurn + " littleTurn: " + littleTurn);
+                //window.console.log("you got it wrong so scoreCompare is calling playDemo, and resetting values. demoTurn: " + demoTurn + " littleTurn: " + littleTurn);
                 setTimeout(function(){
                     playDemo(); 
                 }, 1500);
@@ -259,18 +258,18 @@ function playDemo(){
     //no parameter, it uses the global demoTurn
     if (gameGoing === true){
         updateCounter(bigTurn+1);
-        window.console.log("playDemo is checking if it needs to go");
-        window.console.log("at the start of playDemo bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
+        //window.console.log("playDemo is checking if it needs to go");
+        //window.console.log("at the start of playDemo bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
         //if (demoTurn < (bigTurn+1)){
         if (demoTurn <= bigTurn){
-            window.console.log("playDemo has decided to go");
+            //window.console.log("playDemo has decided to go");
             //call button press 
             setTimeout(function(){computerPushButton(colorSequence[demoTurn]);}, 500);
 
         } else if (demoTurn > bigTurn){
                 demoMode = false;
                 activateCursor();
-                window.console.log("playDemo has decided to stop");
+                //window.console.log("playDemo has decided to stop");
                 //if no one presses the button in time, set them up to fail in scoreCompare
             //somehow this gives less time than it should on subsequent presses, like it's getting reset too soon maybe?
                 //responseTime = setTimeout(scoreCompare, 3000);
@@ -285,7 +284,7 @@ function flashMessage(message, times){
     //TODO: do some stuff with intervals to actually make this work as a flash
     //use class led-off to get the flashing effect visually
     document.getElementById('count').innerHTML = message;
-    window.console.log("I'm dispalying the message " + message + " " + times + " times");
+    //window.console.log("I'm dispalying the message " + message + " " + times + " times");
     /////after flash message is done, only then should it return the counter, so have the update called by flash message
             //set counter back to bigTurn, but only after we see the message
             setTimeout(function() {updateCounter(bigTurn+1);}, 1500);
@@ -311,30 +310,24 @@ function generateColorSequence(){
     }
 }
 
-//lots of copy pasting here, better come up with a way automate/streamline
-function victorySong() {
-    setTimeout(function(){
-        tones[1].load(); //so the sound plays more than once
-        tones[1].play(); //will need a way to prolong the noise
-    }, 100);
-    setTimeout(function(){
-        tones[2].load(); //so the sound plays more than once
-        tones[2].play(); //will need a way to prolong the noise
-    }, 300);
-    setTimeout(function(){
-        tones[3].load(); //so the sound plays more than once
-        tones[3].play(); //will need a way to prolong the noise
-    }, 500);
-    setTimeout(function(){
-        tones[4].load(); //so the sound plays more than once
-        tones[4].play(); //will need a way to prolong the noise
-    }, 700);
+function victorySong(num) {
+    let victorySounds = [1, 2, 1, 3, 2, 3, 4, 3, 4];
+    tones[victorySounds[num]].load();
+    tones[victorySounds[num]].play();
+    if (num < (victorySounds.length-1)){
+        window.console.log("victory song num: " + num);
+        num++;
+        window.console.log("victory song num incremented to: " + num);
+        setTimeout(function(){
+            victorySong(num);
+        }, 200);
+    }
 }
 
 //not sure it really makes senst to have this as a function but we'll see
 function detectVictory(){
     if (littleTurn === (colorSequence.length - 1)){
-        window.console.log("you won!");
+        //window.console.log("you won!");
         //play victory tune
         victorySong();
         //start the game again after a timeout long enough for the victory song to do its thing
