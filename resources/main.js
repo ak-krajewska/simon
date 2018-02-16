@@ -81,16 +81,17 @@ function toggleStrict(){
 }
 
 function activateGamePad(){
-    document.getElementById('1').addEventListener('mousedown', pushBlue);
-    document.getElementById('1').addEventListener('mouseup', unPushBlue);
-    document.getElementById('2').addEventListener('mousedown', pushYellow);
-    document.getElementById('2').addEventListener('mouseup', unPushYellow);
-    document.getElementById('3').addEventListener('mousedown', pushRed);
-    document.getElementById('3').addEventListener('mouseup', unPushRed);
-    document.getElementById('4').addEventListener('mousedown', pushGreen);
-    document.getElementById('4').addEventListener('mouseup', unPushGreen);
+    document.getElementById('1').addEventListener('mousedown', playerPushButton);
+    document.getElementById('1').addEventListener('mouseup', playerUnPushButton);
+    document.getElementById('2').addEventListener('mousedown', playerPushButton);
+    document.getElementById('2').addEventListener('mouseup', playerUnPushButton);
+    document.getElementById('3').addEventListener('mousedown', playerPushButton);
+    document.getElementById('3').addEventListener('mouseup', playerUnPushButton);
+    document.getElementById('4').addEventListener('mousedown', playerPushButton);
+    document.getElementById('4').addEventListener('mouseup', playerUnPushButton);
 }
 
+/*
 function pushBlue(){
     if (demoMode === false){
         playerPushButton(1);
@@ -131,20 +132,23 @@ function unPushGreen(){
     playerUnPushButton(4);
 }
 
-function playerPushButton(padNum) {
+*/
+
+function playerPushButton() {
     if (demoMode === false){
         clearTimeout(responseTime);
-        document.getElementById(padNum).classList.add("light");
-        tones[padNum].load(); 
-        tones[padNum].play(); 
+        document.getElementById(this.id).classList.add("light");
+        tones[this.id].load(); 
+        tones[this.id].play(); 
     } else return;
     
 }
 
-function playerUnPushButton(padNum){
+function playerUnPushButton(){
     if (demoMode === false){
-        document.getElementById(padNum).classList.remove("light");
-        scoreCompare(padNum);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
+        document.getElementById(this.id).classList.remove("light");
+        scoreCompare(this.id);//send the button press to scoreCompare which will check it against the current place in small turn of the current bigturn
+        window.console.log("you released button " + this.id);
     }
 }
 
@@ -190,8 +194,8 @@ function startGame(){
 
 function scoreCompare(num){
     //something is looping compareScore, calling it over and over
-    if (num === colorSequence[littleTurn]){
-        //window.console.log("you played "+ num + " the right tone");
+    if (num == colorSequence[littleTurn]){
+        window.console.log("you played "+ num + " the right tone");
         if (littleTurn === bigTurn){
             //check for victory condition
             if (littleTurn === (colorSequence.length - 1)){
@@ -212,7 +216,7 @@ function scoreCompare(num){
                 bigTurn++;
                 littleTurn = 0; 
                 demoTurn = 0;
-                //window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
+                window.console.log("scoreCompare updates. bigTurn: " + bigTurn + " littleTurn: " + littleTurn + " demoTurn: " + demoTurn);
                 setTimeout(function(){
                     playDemo(); 
                 }, 500);
@@ -223,7 +227,7 @@ function scoreCompare(num){
         }
         //if you got it wrong
         } else if (num != colorSequence[littleTurn]){
-            //window.console.log("you played "+ num + " the wrong tone");
+            window.console.log("you played "+ num + " the wrong tone");
             //if strictmode
             if (strictMode === true){
                 //error message
