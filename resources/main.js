@@ -3,8 +3,8 @@
 //nice to have: figure out how to sustain the tone, but let's not get worked up about it yet -> not all simon games sustained the note
 
 //TODO: see if littleTurn and demoTurn can be rolled up into just one counter variable
-//TODO: set the victory condition back to 20 when you're done with testing
 //TODO: reorder the way the functions appear so that code is easier to read
+//TODO: set condition for mobile phones, because Safari on iphone just files mousedown, mouseup, click all in a row so the user doesn't really get to see their button press
 
 let isConsoleActive = false;
 let strictMode = false;
