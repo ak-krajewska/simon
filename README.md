@@ -6,4 +6,4 @@ Web-based Simon Game for freeCodeCamp
 
 Testing if my SSH key works!
 
-`Test codeblock _with italics_ `
+`Test codeblock <em>with italics</em> `
