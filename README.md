@@ -7,3 +7,7 @@ Web-based Simon Game for freeCodeCamp
 Testing if my SSH key works!
 
 `Test codeblock <em>with italics</em> `
+
+ ```shell
+  > Test codeblock <em>with italics</em>
+  ```
